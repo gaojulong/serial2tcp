@@ -108,8 +108,8 @@ if __name__ == '__main__':
     parser.add_option("-l", "--listen", dest="listen",
                       help="Listen address on which to run the server (default '127.0.0.1')", type=str, default='127.0.0.1')
     parser.add_option(
-        '--access-list', dest='acl', type=str, default="127.0.0.1",
-        help="List of IP addresses e.g '127.0.0.1, 192.168.0.2'")
+        '--access-list', dest='acl', type=str,
+        help="Access not allowed in the list, List of IP addresses e.g '127.0.0.1, 192.168.0.2'")
 
     (options, args) = parser.parse_args()
 
@@ -151,7 +151,7 @@ if __name__ == '__main__':
             connection, addr = srv.accept()
             address, port = addr
             log.info('Connecting with tcp://{0}:{1}'.format(address, port))
-            if address in access_list:
+            if address not in access_list:
                 #enter console->serial loop
                 r = Redirector(ser, connection)
                 r.shortcut()
