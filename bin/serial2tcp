@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-
-#(C)2002-2024 Chris Liechti <cliechti@gmx.net>
-#redirect data from a TCP/IP connection to a serial port and vice versa
-#requires Python 3.X 'cause socket.sendall is used
-
+# (C)2002-2024 Chris Liechti <cliechti@gmx.net>
+# redirect data from a TCP/IP connection to a serial port and vice versa
+# requires Python 3.X 'cause socket.sendall is used
 # 2017.10.27 add python3
-
 import sys
 import os
 import serial
@@ -40,19 +37,19 @@ class Redirector:
         """loop forever and copy serial->socket"""
         while self.alive:
             try:
-                #read one, blocking
+                # read one, blocking
                 data = self.serial.read(1)
-                #look if there is more
+                # look if there is more
                 n = self.serial.inWaiting()
                 if n:
-                    #and get as much as possible
+                    # and get as much as possible
                     data = data + self.serial.read(n)
                 if data:
-                    #send it over TCP
+                    # send it over TCP
                     self.socket.sendall(data)
             except socket.error as msg:
                 log.error(msg)
-                #probably got disconnected
+                # probably got disconnected
                 break
         self.alive = False
 
@@ -80,8 +77,10 @@ class Redirector:
             self.alive = False
             self.thread_read.join()
 
+
 if __name__ == '__main__':
     from optparse import OptionParser
+
     ser = serial.Serial()
 
     descr = 'WARNING: You have to allow connections only from the addresses' \
@@ -105,9 +104,10 @@ if __name__ == '__main__':
     parser.add_option("-P", "--localport", dest="port",
                       help="TCP/IP port on which to run the server (default 9100)", type=int, default=9100)
     parser.add_option("-l", "--listen", dest="listen",
-                      help="Listen address on which to run the server (default '127.0.0.1')", type=str, default='127.0.0.1')
+                      help="Listen address on which to run the server (default '127.0.0.1')", type=str,
+                      default='127.0.0.1')
     parser.add_option(
-        '--not-access-list', dest='acl', type=str,
+        '--not-access-list', dest='acl', type=str, default=' ',
         help="Access not allowed in the list, List of IP addresses e.g '127.0.0.1, 192.168.0.2'")
 
     (options, args) = parser.parse_args()
@@ -117,9 +117,9 @@ if __name__ == '__main__':
     ser.rtscts = options.rtscts
     ser.xonxoff = options.xonxoff
 
-    access_list = set([ip.strip(" ") for ip in options.acl.split(',')])
+    not_access_list = set([ip.strip(" ") for ip in options.acl.split(',')])
 
-    #required so that the reader thread can exit
+    # required so that the reader thread can exit
     ser.timeout = 1
 
     log.info("TCP/IP to Serial redirector (Ctrl-C to quit)")
@@ -134,6 +134,7 @@ if __name__ == '__main__':
     srv.bind((options.listen, options.port))
     srv.listen(1)
 
+
     def signal_handler(signal, frame):
         try:
             srv.close()
@@ -141,6 +142,7 @@ if __name__ == '__main__':
             log.warning(repr(e))
         finally:
             sys.exit(0)
+
 
     signal.signal(signal.SIGINT, signal_handler)
 
@@ -150,8 +152,8 @@ if __name__ == '__main__':
             connection, addr = srv.accept()
             address, port = addr
             log.info('Connecting with tcp://{0}:{1}'.format(address, port))
-            if address not in access_list:
-                #enter console->serial loop
+            if address not in not_access_list:
+                # enter console->serial loop
                 r = Redirector(ser, connection)
                 r.shortcut()
             else:
@@ -166,3 +168,4 @@ if __name__ == '__main__':
                 pass
             except Exception as e:
                 log.warning(repr(e))
+

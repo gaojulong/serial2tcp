@@ -18,7 +18,7 @@ Redirect USB-Serial
 -------------------
 For redirect /dev/ttyUSB0 with baudrate 9600 bps and 192.168.2.1 can connect to that:
 
-    # serial2tcp -p /dev/ttyUSB0 -b 9600 -l 0.0.0.0 --not-allow-list=''
+    # serial2tcp -p /dev/ttyUSB0 -b 9600 -l 0.0.0.0 -P 10003 --not-access-list=''
 
 Help
 ----
@@ -49,3 +49,12 @@ Help
 Thanks to
 ---------
 This is based on http://www.cs.earlham.edu/~charliep/ecoi/serial/pyserial-2.2/examples/tcp_serial_redirect.py
+
+### 错误总结
+
+Linux下运行时出现/usr/bin/env: ‘python3\r’: No such file or directory, 原有是DOS系统下和Linux系统下对于换行键的表示不同，解决办法
+有两种，复制文本在Linux用vim粘贴。第二种用下面命令转换
+~~~
+sudo apt-get install dos2unix
+dos2unix <filename>
+~~~
