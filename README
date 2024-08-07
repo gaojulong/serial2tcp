@@ -18,7 +18,7 @@ Redirect USB-Serial
 -------------------
 For redirect /dev/ttyUSB0 with baudrate 9600 bps and 192.168.2.1 can connect to that:
 
-    # serial2tcp -p /dev/ttyUSB0 -b 9600 -l 0.0.0.0 --allow-list='192.168.2.1'
+    # serial2tcp -p /dev/ttyUSB0 -b 9600 -l 0.0.0.0 --not-allow-list=''
 
 Help
 ----
@@ -44,7 +44,7 @@ Help
       -l LISTEN, --listen=LISTEN
                             Listen address on which to run the server (default
                             '127.0.0.1')
-      --access-list=ACL     List of IP addresses e.g '127.0.0.1, 192.168.0.2'
+      --not-access-list=ACL     Access not allowed in the list e.g '127.0.0.1, 192.168.0.2'
 
 Thanks to
 ---------

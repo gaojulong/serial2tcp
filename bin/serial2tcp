@@ -85,8 +85,8 @@ if __name__ == '__main__':
     ser = serial.Serial()
 
     descr = 'WARNING: You have to allow connections only from the addresses' \
-            'in the "--allow-list" option. e.g.' \
-            '--allow-list="10.0.0.1, 172.16.0.1, 192.168.0.1"\n' \
+            'in the "--not-allow-list" option. e.g.' \
+            '--not-list="10.0.0.1, 172.16.0.1, 192.168.0.1"\n' \
             'NOTICE: This service supports only ' \
             'one tcp connection per instance.'
 
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     parser.add_option("-l", "--listen", dest="listen",
                       help="Listen address on which to run the server (default '127.0.0.1')", type=str, default='127.0.0.1')
     parser.add_option(
-        '--access-list', dest='acl', type=str,
+        '--not-access-list', dest='acl', type=str,
         help="Access not allowed in the list, List of IP addresses e.g '127.0.0.1, 192.168.0.2'")
 
     (options, args) = parser.parse_args()
@@ -155,7 +155,7 @@ if __name__ == '__main__':
                 r = Redirector(ser, connection)
                 r.shortcut()
             else:
-                log.error('Address {0} not in access list.'.format(address))
+                log.error('Address {0} in not access list.'.format(address))
         except socket.error as msg:
             log.error(msg)
         finally:
